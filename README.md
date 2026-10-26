@@ -44,9 +44,11 @@ Cada rechazo genera el evento `\antivirus_mediapolicy\event\file_rejected` (usua
 
 ```
 vendor/bin/phpunit --testsuite antivirus_mediapolicy_testsuite
-# o
-vendor/bin/phpunit lib/antivirus/mediapolicy/tests/
+# o un archivo concreto
+vendor/bin/phpunit lib/antivirus/mediapolicy/tests/policy_test.php
 ```
+
+Pasar la carpeta `tests/` no ejecuta nada: PHPUnit busca `*Test.php` y Moodle usa `*_test.php`.
 
 ## Pendiente de verificar
 
