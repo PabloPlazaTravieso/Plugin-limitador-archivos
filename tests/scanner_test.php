@@ -20,7 +20,7 @@ namespace antivirus_mediapolicy;
  * Integration tests for the scanner, using small generated files detected by finfo.
  *
  * @package    antivirus_mediapolicy
- * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
+ * @copyright  2026 Awakelab
  * @covers     \antivirus_mediapolicy\scanner
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

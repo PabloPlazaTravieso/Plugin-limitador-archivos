@@ -20,7 +20,7 @@ namespace antivirus_mediapolicy;
  * Unit tests for the pure policy rules.
  *
  * @package    antivirus_mediapolicy
- * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
+ * @copyright  2026 Awakelab
  * @covers     \antivirus_mediapolicy\policy
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

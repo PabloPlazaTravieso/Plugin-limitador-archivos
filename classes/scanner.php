@@ -23,7 +23,7 @@ namespace antivirus_mediapolicy;
  * so this is the single hook that covers all upload paths.
  *
  * @package    antivirus_mediapolicy
- * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
+ * @copyright  2026 Awakelab
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class scanner extends \core\antivirus\scanner {
