@@ -20,10 +20,10 @@ namespace antivirus_mediapolicy;
  * Pure upload rules, independent of Moodle so they can be unit tested in isolation.
  *
  * @package    antivirus_mediapolicy
+ * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class policy {
-
     /**
      * Evaluates a file against the policy.
      *
@@ -35,8 +35,14 @@ class policy {
      * @param int $othermax Max size in bytes for any other file.
      * @return array|null Null if accepted, otherwise ['reason' => string id, 'a' => placeholders].
      */
-    public static function evaluate(string $contentmime, string $extmime, int $size,
-            array $allowedaudio, int $audiomax, int $othermax): ?array {
+    public static function evaluate(
+        string $contentmime,
+        string $extmime,
+        int $size,
+        array $allowedaudio,
+        int $audiomax,
+        int $othermax
+    ): ?array {
 
         // Video: rejected if either the content or the extension says video (defensive).
         if (self::is_type($contentmime, 'video') || self::is_type($extmime, 'video')) {

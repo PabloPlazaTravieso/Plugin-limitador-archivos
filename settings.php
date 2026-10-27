@@ -18,24 +18,34 @@
  * Plugin settings. For antivirus plugins $settings is created by the plugininfo class.
  *
  * @package    antivirus_mediapolicy
+ * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext('antivirus_mediapolicy/allowedaudiomimetypes',
+    $settings->add(new admin_setting_configtext(
+        'antivirus_mediapolicy/allowedaudiomimetypes',
         get_string('allowedaudiomimetypes', 'antivirus_mediapolicy'),
         get_string('allowedaudiomimetypes_desc', 'antivirus_mediapolicy'),
-        'audio/mpeg', PARAM_TEXT));
+        'audio/mpeg',
+        PARAM_TEXT
+    ));
 
-    $settings->add(new admin_setting_configtext('antivirus_mediapolicy/audiomaxmb',
+    $settings->add(new admin_setting_configtext(
+        'antivirus_mediapolicy/audiomaxmb',
         get_string('audiomaxmb', 'antivirus_mediapolicy'),
         get_string('audiomaxmb_desc', 'antivirus_mediapolicy'),
-        20, PARAM_INT));
+        20,
+        PARAM_INT
+    ));
 
-    $settings->add(new admin_setting_configtext('antivirus_mediapolicy/othermaxmb',
+    $settings->add(new admin_setting_configtext(
+        'antivirus_mediapolicy/othermaxmb',
         get_string('othermaxmb', 'antivirus_mediapolicy'),
         get_string('othermaxmb_desc', 'antivirus_mediapolicy'),
-        30, PARAM_INT));
+        30,
+        PARAM_INT
+    ));
 }

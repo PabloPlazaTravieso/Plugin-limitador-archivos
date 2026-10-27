@@ -20,11 +20,11 @@ namespace antivirus_mediapolicy;
  * Unit tests for the pure policy rules.
  *
  * @package    antivirus_mediapolicy
+ * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
  * @covers     \antivirus_mediapolicy\policy
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class policy_test extends \basic_testcase {
-
     /** One megabyte. */
     const MB = 1048576;
 
@@ -70,8 +70,14 @@ final class policy_test extends \basic_testcase {
      * Messages carry the configured limit.
      */
     public function test_placeholders(): void {
-        $result = policy::evaluate('application/pdf', 'application/pdf', 11 * self::MB, ['audio/mpeg'],
-            5 * self::MB, 10 * self::MB);
+        $result = policy::evaluate(
+            'application/pdf',
+            'application/pdf',
+            11 * self::MB,
+            ['audio/mpeg'],
+            5 * self::MB,
+            10 * self::MB
+        );
         $this->assertSame(['maxmb' => 10], $result['a']);
     }
 }

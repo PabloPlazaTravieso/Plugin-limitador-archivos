@@ -23,10 +23,10 @@ namespace antivirus_mediapolicy;
  * so this is the single hook that covers all upload paths.
  *
  * @package    antivirus_mediapolicy
+ * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class scanner extends \core\antivirus\scanner {
-
     /** @var array|null Reason of the last rejection, used by get_virus_found_message(). */
     protected $rejection = null;
 
@@ -59,8 +59,10 @@ class scanner extends \core\antivirus\scanner {
         $extmime = mimeinfo('type', $filename);
 
         $config = get_config('antivirus_mediapolicy');
-        $allowed = array_values(array_filter(array_map('trim',
-            explode(',', strtolower($config->allowedaudiomimetypes ?? 'audio/mpeg')))));
+        $allowed = array_values(array_filter(array_map(
+            'trim',
+            explode(',', strtolower($config->allowedaudiomimetypes ?? 'audio/mpeg'))
+        )));
         $audiomax = (int) ($config->audiomaxmb ?? 20) * 1048576;
         $othermax = (int) ($config->othermaxmb ?? 30) * 1048576;
 

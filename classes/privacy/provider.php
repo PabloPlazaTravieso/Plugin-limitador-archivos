@@ -20,10 +20,10 @@ namespace antivirus_mediapolicy\privacy;
  * Privacy provider: the plugin stores no personal data itself (events go to the log stores).
  *
  * @package    antivirus_mediapolicy
+ * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements \core_privacy\local\metadata\null_provider {
-
     /**
      * Reason string id.
      *

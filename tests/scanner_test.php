@@ -20,11 +20,11 @@ namespace antivirus_mediapolicy;
  * Integration tests for the scanner, using small generated files detected by finfo.
  *
  * @package    antivirus_mediapolicy
+ * @copyright  2026 Pablo Plaza <pablo.plaza@awakelab.world>
  * @covers     \antivirus_mediapolicy\scanner
  * @license    https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 final class scanner_test extends \advanced_testcase {
-
     /** @var string Temp dir for generated files. */
     protected $dir;
 
@@ -48,18 +48,30 @@ final class scanner_test extends \advanced_testcase {
         return $path;
     }
 
-    /** Minimal MP3: ID3v2 header followed by MPEG frame headers. */
+    /**
+     * Minimal MP3: ID3v2 header followed by MPEG frame headers.
+     *
+     * @return string
+     */
     protected function mp3_content(): string {
         return "ID3\x03\x00\x00\x00\x00\x00\x00" . str_repeat("\xFF\xFB\x90\x64" . str_repeat("\x00", 413), 10);
     }
 
-    /** Minimal WAV header. */
+    /**
+     * Minimal WAV header.
+     *
+     * @return string
+     */
     protected function wav_content(): string {
         return 'RIFF' . pack('V', 36) . 'WAVEfmt ' . pack('VvvVVvv', 16, 1, 1, 8000, 8000, 1, 8)
             . 'data' . pack('V', 0);
     }
 
-    /** Minimal MP4 header. */
+    /**
+     * Minimal MP4 header.
+     *
+     * @return string
+     */
     protected function mp4_content(): string {
         return pack('N', 24) . 'ftypisom' . pack('N', 512) . 'isomiso2' . str_repeat("\x00", 100);
     }
@@ -84,8 +96,10 @@ final class scanner_test extends \advanced_testcase {
         $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($path, 'clip.mp4'));
         $this->assertSame('rejected_video', $scanner->get_virus_found_message()['string']);
 
-        $events = array_values(array_filter($sink->get_events(),
-            fn($e) => $e instanceof event\file_rejected));
+        $events = array_values(array_filter(
+            $sink->get_events(),
+            fn($e) => $e instanceof event\file_rejected
+        ));
         $this->assertCount(1, $events);
         $this->assertSame('clip.mp4', $events[0]->other['filename']);
         $this->assertSame('rejected_video', $events[0]->other['reason']);
