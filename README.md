@@ -58,3 +58,4 @@ Pasar la carpeta `tests/` no ejecuta nada: PHPUnit busca `*Test.php` y Moodle us
 - Formatos ambiguos (`.ogg`, `.webm`, `.m4a`): con el criterio defensivo se rechazan.
 - Probar manualmente cada vía de subida: tarea, foro, SCORM, recurso archivo, TinyMCE (arrastrar e insertar), repositorio URL y `webservice/upload.php`.
 - No cubre archivos ya existentes, restauraciones de copias de seguridad ni archivos creados por código de servidor.
+- Los paquetes ZIP (SCORM, H5P, ZIP descomprimidos en un recurso) se analizan como un único archivo ZIP, así que un vídeo dentro del paquete no se detecta. En los paquetes SCORM se acepta así por decisión del proyecto.
