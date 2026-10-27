@@ -48,15 +48,15 @@ class scanner extends \core\antivirus\scanner {
      */
     public function scan_file($file, $filename) {
         $this->rejection = null;
+        $extmime = mimeinfo('type', $filename);
 
+        // Fail closed: the core accepts the upload on SCAN_RESULT_ERROR.
         if (!is_readable($file)) {
-            $this->set_scanning_notice('File not readable: ' . $filename);
-            return self::SCAN_RESULT_ERROR;
+            return $this->reject(['reason' => 'rejected_unreadable', 'a' => []], $filename, '', $extmime, 0);
         }
 
         $size = (int) filesize($file);
         $contentmime = (new \finfo(FILEINFO_MIME_TYPE))->file($file) ?: 'application/octet-stream';
-        $extmime = mimeinfo('type', $filename);
 
         $config = get_config('antivirus_mediapolicy');
         $allowed = array_values(array_filter(array_map(
@@ -70,12 +70,25 @@ class scanner extends \core\antivirus\scanner {
         if ($result === null) {
             return self::SCAN_RESULT_OK;
         }
+        return $this->reject($result, $filename, $contentmime, $extmime, $size);
+    }
 
+    /**
+     * Records a rejection: message for the user, scanning notice and log event.
+     *
+     * @param array $result ['reason' => string id, 'a' => placeholders].
+     * @param string $filename Original file name.
+     * @param string $contentmime Mimetype detected from the content ('' if unknown).
+     * @param string $extmime Mimetype derived from the extension.
+     * @param int $size File size in bytes.
+     * @return int SCAN_RESULT_FOUND.
+     */
+    protected function reject(array $result, string $filename, string $contentmime, string $extmime, int $size): int {
         $this->rejection = $result;
         $this->set_scanning_notice("{$result['reason']}: {$filename} ({$contentmime}, {$size} bytes)");
 
         event\file_rejected::create([
-            'context' => \context_system::instance(),
+            'context' => $this->upload_context(),
             'other' => [
                 'filename' => $filename,
                 'contentmime' => $contentmime,
@@ -86,6 +99,20 @@ class scanner extends \core\antivirus\scanner {
         ])->trigger();
 
         return self::SCAN_RESULT_FOUND;
+    }
+
+    /**
+     * Context of the page the upload comes from (course, activity...), or system if none was set.
+     *
+     * Reads the page's internal context because $PAGE->context warns, or throws in AJAX
+     * scripts with developer debugging, when no context has been set.
+     *
+     * @return \context
+     */
+    protected function upload_context(): \context {
+        global $PAGE;
+        $context = (fn() => $this->_context)->call($PAGE);
+        return $context ?? \context_system::instance();
     }
 
     /**

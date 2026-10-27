@@ -103,6 +103,44 @@ final class scanner_test extends \advanced_testcase {
         $this->assertCount(1, $events);
         $this->assertSame('clip.mp4', $events[0]->other['filename']);
         $this->assertSame('rejected_video', $events[0]->other['reason']);
+        // No page context set: the event falls back to system.
+        $this->assertEquals(\context_system::instance(), $events[0]->get_context());
+    }
+
+    public function test_event_uses_page_context(): void {
+        global $PAGE;
+        $course = $this->getDataGenerator()->create_course();
+        $coursecontext = \context_course::instance($course->id);
+        $PAGE->set_context($coursecontext);
+
+        $sink = $this->redirectEvents();
+        $scanner = new scanner();
+        $path = $this->make_file('clip.mp4', $this->mp4_content());
+        $scanner->scan_file($path, 'clip.mp4');
+
+        $events = array_values(array_filter(
+            $sink->get_events(),
+            fn($e) => $e instanceof event\file_rejected
+        ));
+        $this->assertCount(1, $events);
+        $this->assertEquals($coursecontext, $events[0]->get_context());
+    }
+
+    public function test_unreadable_file_rejected(): void {
+        $sink = $this->redirectEvents();
+        $scanner = new scanner();
+
+        $result = $scanner->scan_file($this->dir . '/missing.pdf', 'missing.pdf');
+
+        $this->assertSame(scanner::SCAN_RESULT_FOUND, $result);
+        $this->assertSame('rejected_unreadable', $scanner->get_virus_found_message()['string']);
+        $events = array_values(array_filter(
+            $sink->get_events(),
+            fn($e) => $e instanceof event\file_rejected
+        ));
+        $this->assertCount(1, $events);
+        $this->assertSame('rejected_unreadable', $events[0]->other['reason']);
+        $this->assertSame(0, $events[0]->other['filesize']);
     }
 
     public function test_video_disguised_as_pdf_rejected(): void {

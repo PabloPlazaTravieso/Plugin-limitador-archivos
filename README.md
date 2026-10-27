@@ -10,7 +10,9 @@ Plugin antivirus para Moodle 4.4 que restringe los archivos que se pueden subir,
 
 El tipo se detecta sobre el **contenido real** (`finfo`) y también por la extensión (`mimeinfo`). Los tres límites se configuran en los ajustes del plugin.
 
-Cada rechazo genera el evento `\antivirus_mediapolicy\event\file_rejected` (usuario, nombre de archivo, tipo detectado, tamaño y motivo), visible en *Informes → Registros*.
+Cada rechazo genera el evento `\antivirus_mediapolicy\event\file_rejected` (usuario, nombre de archivo, tipo detectado, tamaño y motivo), visible en *Informes → Registros*. El evento se registra en el contexto de la página desde la que se sube (curso, actividad...) o en el de sistema si no hay página (app móvil, servicios web).
+
+Si el archivo no se puede leer para analizarlo, se rechaza: el core de Moodle acepta la subida cuando un antivirus devuelve error, así que el plugin no devuelve error nunca.
 
 ## Estructura
 

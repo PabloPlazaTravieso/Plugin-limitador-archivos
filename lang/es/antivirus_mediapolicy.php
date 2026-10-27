@@ -35,4 +35,5 @@ $string['pluginname'] = 'Política de subida de archivos multimedia';
 $string['privacy:metadata'] = 'El plugin Política de subida de archivos multimedia no almacena datos personales.';
 $string['rejected_audio'] = 'El audio debe ser MP3 de máximo {$a->maxmb} MB ({$a->item}).';
 $string['rejected_size'] = 'El archivo {$a->item} supera el límite de {$a->maxmb} MB.';
+$string['rejected_unreadable'] = 'No se ha podido comprobar el archivo {$a->item} y se ha rechazado.';
 $string['rejected_video'] = 'No se permiten archivos de vídeo ({$a->item}).';

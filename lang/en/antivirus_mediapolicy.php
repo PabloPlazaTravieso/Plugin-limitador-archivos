@@ -35,4 +35,5 @@ $string['pluginname'] = 'Media upload policy';
 $string['privacy:metadata'] = 'The Media upload policy plugin does not store any personal data.';
 $string['rejected_audio'] = 'Audio must be MP3 and at most {$a->maxmb} MB ({$a->item}).';
 $string['rejected_size'] = 'The file {$a->item} exceeds the {$a->maxmb} MB limit.';
+$string['rejected_unreadable'] = 'The file {$a->item} could not be checked and has been rejected.';
 $string['rejected_video'] = 'Video files are not allowed ({$a->item}).';
