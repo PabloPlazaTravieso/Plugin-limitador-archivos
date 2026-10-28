@@ -22,6 +22,7 @@ Si el archivo no se puede leer para analizarlo, se rechaza: el core de Moodle ac
 
 ```
 .                                 → raíz del repositorio = <moodle>/lib/antivirus/mediapolicy
+├── INSTALACION.md                guía de instalación para administradores
 ├── version.php
 ├── settings.php                  ajustes (MIME de audio, MB audio, MB resto)
 ├── classes/
@@ -36,6 +37,10 @@ Si el archivo no se puede leer para analizarlo, se rechaza: el core de Moodle ac
 ```
 
 ## Instalación
+
+Guía completa para administradores (ZIP, activación, ajustes, comprobación): [INSTALACION.md](INSTALACION.md).
+
+Desde el repositorio:
 
 1. Clonar el repositorio en `<moodle>/lib/antivirus/mediapolicy` (o copiar su contenido en esa carpeta).
 2. *Administración del sitio → Notificaciones* para instalar.
@@ -58,10 +63,13 @@ vendor/bin/phpunit lib/antivirus/mediapolicy/tests/policy_test.php
 
 Pasar la carpeta `tests/` no ejecuta nada: PHPUnit busca `*Test.php` y Moodle usa `*_test.php`.
 
-## Pendiente de verificar
+## Limitaciones
 
-- Que `finfo` del servidor detecta como `audio/mpeg` los MP3 reales (algunos sin ID3 pueden salir como `application/octet-stream`).
-- Formatos ambiguos (`.ogg`, `.webm`, `.m4a`): con el criterio defensivo se rechazan.
-- Probar manualmente cada vía de subida: tarea, foro, SCORM, recurso archivo, TinyMCE (arrastrar e insertar), repositorio URL y `webservice/upload.php`.
-- No cubre archivos ya existentes, restauraciones de copias de seguridad ni archivos creados por código de servidor.
 - Los paquetes ZIP (SCORM, H5P, ZIP descomprimidos en un recurso) se analizan como un único archivo ZIP, así que un vídeo dentro del paquete no se detecta. Por decisión del proyecto se acepta así en todos ellos: el plugin no bloquea un vídeo que vaya comprimido dentro de un paquete. El paquete sí está sujeto al límite general de tamaño.
+- No cubre archivos ya existentes, restauraciones de copias de seguridad ni archivos creados por código de servidor.
+- `core_files_upload` (servicio web) no llama al antivirus; no está en el servicio de la app móvil.
+- Formatos de audio ambiguos (`.ogg`, `.webm`, `.m4a`) se rechazan por el criterio defensivo.
+
+## Verificación
+
+Probado en Moodle 4.4.2: archivos privados, tarea, foro, recurso Archivo, TinyMCE, editor H5P, SCORM, `repository_ajax.php` y `webservice/upload.php` (app móvil), con MP3 con y sin ID3, WAV, OGG, M4A, MP4, WebM, AVI, vídeos y WAV renombrados, y archivos por encima de los límites. El repositorio URL solo descarga imágenes y pasa por el mismo análisis.
