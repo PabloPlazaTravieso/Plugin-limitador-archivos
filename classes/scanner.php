@@ -116,6 +116,24 @@ class scanner extends \core\antivirus\scanner {
     }
 
     /**
+     * Does not notify admins of rejections: they are policy decisions, not infections.
+     *
+     * The core asks the scanner to build the "infected file" message on every
+     * SCAN_RESULT_FOUND; no message means no notification. Rejections stay in the log
+     * and in the rejected uploads report.
+     *
+     * @param string $notice Notice text.
+     * @param int $format Text format.
+     * @param string $eventname Message provider name.
+     */
+    public function message_admins($notice, $format = FORMAT_PLAIN, $eventname = 'errors') {
+        if ($eventname === 'infected') {
+            return;
+        }
+        parent::message_admins($notice, $format, $eventname);
+    }
+
+    /**
      * Message shown to the user instead of the generic "virus found".
      *
      * @return array

@@ -143,6 +143,24 @@ final class scanner_test extends \advanced_testcase {
         $this->assertSame(0, $events[0]->other['filesize']);
     }
 
+    public function test_rejection_does_not_notify_admins(): void {
+        set_config('antiviruses', 'mediapolicy');
+        // IPv6 so the incident details skip the online IP lookup.
+        $_SERVER['REMOTE_ADDR'] = '::1';
+        $messages = $this->redirectMessages();
+        $emails = $this->redirectEmails();
+        $path = $this->make_file('clip.mp4', $this->mp4_content());
+
+        try {
+            \core\antivirus\manager::scan_file($path, 'clip.mp4', false);
+            $this->fail('The upload should have been rejected.');
+        } catch (\core\antivirus\scanner_exception $e) {
+            $this->assertSame('rejected_video', $e->errorcode);
+        }
+        $this->assertSame(0, $messages->count());
+        $this->assertSame(0, $emails->count());
+    }
+
     public function test_video_disguised_as_pdf_rejected(): void {
         $scanner = new scanner();
         $path = $this->make_file('report.pdf', $this->mp4_content());

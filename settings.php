@@ -24,6 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$ADMIN->add('reports', new admin_externalpage(
+    'antivirus_mediapolicy_rejected',
+    get_string('rejecteduploads', 'antivirus_mediapolicy'),
+    new moodle_url('/lib/antivirus/mediapolicy/rejected.php'),
+    'moodle/site:config'
+));
+
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configtext(
         'antivirus_mediapolicy/allowedaudiomimetypes',
