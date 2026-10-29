@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'antivirus_mediapolicy';
-$plugin->version   = 2026102801;
+$plugin->version   = 2026102900;
 $plugin->requires  = 2024042200; // Moodle 4.4.
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '1.0.0';
+$plugin->release   = '1.0.1';

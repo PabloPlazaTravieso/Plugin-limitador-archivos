@@ -8,7 +8,7 @@ Plugin antivirus para Moodle 4.4 que restringe los archivos que se pueden subir,
 | Audio | Solo MP3 (`audio/mpeg`), máximo 20 MB |
 | Resto | Aceptado, máximo 30 MB |
 
-El tipo se detecta sobre el **contenido real** (`finfo`) y también por la extensión (`mimeinfo`). Los tres límites se configuran en los ajustes del plugin.
+El tipo se detecta sobre el **contenido real** (`finfo`) y también por la extensión (`mimeinfo`). Algunos MP3 reales tienen bytes entre la etiqueta ID3 y el audio y `finfo` no los reconoce (`application/octet-stream`); en ese caso, si el nombre acaba en `.mp3`, el plugin busca tras la etiqueta varias tramas MPEG Layer III seguidas (`classes/mpeg_audio.php`) y, si las encuentra, lo trata como `audio/mpeg`. Los tres límites se configuran en los ajustes del plugin.
 
 Cada rechazo genera el evento `\antivirus_mediapolicy\event\file_rejected` (usuario, nombre de archivo, tipo detectado, tamaño y motivo), visible en *Informes → Registros*. El evento se registra en el contexto de la página desde la que se sube (curso, actividad...) o en el de sistema si no hay página (app móvil, servicios web).
 
@@ -28,12 +28,13 @@ Si el archivo no se puede leer para analizarlo, se rechaza: el core de Moodle ac
 ├── classes/
 │   ├── scanner.php               enganche con \core\antivirus\scanner
 │   ├── policy.php                reglas puras (testeables)
+│   ├── mpeg_audio.php            detección de MP3 que finfo no reconoce
 │   ├── event/file_rejected.php   evento de auditoría
 │   ├── table/rejected_uploads.php  tabla del informe
 │   └── privacy/provider.php
 ├── rejected.php                  informe "Subidas rechazadas"
 ├── lang/en, lang/es
-└── tests/                        PHPUnit (policy_test, scanner_test, rejected_uploads_test)
+└── tests/                        PHPUnit (policy_test, scanner_test, mpeg_audio_test, rejected_uploads_test)
 ```
 
 ## Instalación

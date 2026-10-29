@@ -57,6 +57,14 @@ class scanner extends \core\antivirus\scanner {
 
         $size = (int) filesize($file);
         $contentmime = (new \finfo(FILEINFO_MIME_TYPE))->file($file) ?: 'application/octet-stream';
+        // Some real MP3s are not recognised by finfo (bytes between the ID3 tag and the audio).
+        if (
+            $contentmime === 'application/octet-stream'
+            && strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'mp3'
+            && mpeg_audio::is_tagged_mp3($file)
+        ) {
+            $contentmime = 'audio/mpeg';
+        }
 
         $config = get_config('antivirus_mediapolicy');
         $allowed = array_values(array_filter(array_map(

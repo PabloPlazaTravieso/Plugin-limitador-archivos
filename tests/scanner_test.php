@@ -88,6 +88,22 @@ final class scanner_test extends \advanced_testcase {
         $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($path, 'song.mp3'));
     }
 
+    public function test_mp3_not_recognised_by_finfo_accepted(): void {
+        // Bytes between the ID3 tag and the audio, as in some real MP3s: finfo gives up.
+        $content = "ID3\x03\x00\x00\x00\x00\x00\x40" . str_repeat("\x00", 64)
+            . str_repeat("\x1d\x17\x70\x29\x92\x51\x79\x27", 48)
+            . str_repeat("\xFF\xFB\x90\x64" . str_repeat("\x00", 413), 10);
+        $path = $this->make_file('song.mp3', $content);
+        $this->assertSame('application/octet-stream', (new \finfo(FILEINFO_MIME_TYPE))->file($path));
+
+        $scanner = new scanner();
+        $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($path, 'song.mp3'));
+        // Only for .mp3 names: the same content with another extension is not treated as audio.
+        $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($path, 'song.bin'));
+        set_config('audiomaxmb', 0, 'antivirus_mediapolicy');
+        $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($path, 'song.mp3'));
+    }
+
     public function test_video_rejected_and_logged(): void {
         $sink = $this->redirectEvents();
         $scanner = new scanner();

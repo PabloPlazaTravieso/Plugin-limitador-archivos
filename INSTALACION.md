@@ -1,6 +1,6 @@
 # Guía de instalación: Política de subida de archivos multimedia
 
-Plugin `antivirus_mediapolicy`, versión 1.0.0, para Moodle 4.4 o superior con PHP 8.1 o superior.
+Plugin `antivirus_mediapolicy`, versión 1.0.1, para Moodle 4.4 o superior con PHP 8.1 o superior.
 
 ## Qué hace
 
@@ -19,7 +19,7 @@ Se aplica a cualquier subida de archivos de la plataforma: selector de archivos,
 
 ## 1. Instalar
 
-Instalación desde la web, con el archivo `antivirus_mediapolicy-1.0.0.zip`:
+Instalación desde la web, con el archivo `antivirus_mediapolicy-1.0.1.zip`:
 
 1. Ve a *Administración del sitio → Plugins → Instalar plugins* (*Install plugins*).
 2. Sube el ZIP. Si Moodle no detecta el tipo, elige **Plugin antivirus**.
