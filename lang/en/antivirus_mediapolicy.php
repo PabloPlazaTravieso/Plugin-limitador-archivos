@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['allowedaudiomimetypes'] = 'Allowed audio MIME types';
-$string['allowedaudiomimetypes_desc'] = 'Comma separated list, checked against the real file content (e.g. audio/mpeg for MP3).';
+$string['allowedaudioformats'] = 'Allowed audio formats';
+$string['allowedaudioformats_desc'] = 'Tick the audio formats that can be uploaded. The real file content is checked, not just the extension. If none is ticked, no audio is allowed. Videos are always rejected, even with one of these extensions.';
 $string['audiomaxmb'] = 'Maximum audio size (MB)';
 $string['audiomaxmb_desc'] = 'Audio files larger than this are rejected.';
 $string['col_contentmime'] = 'Detected type';
@@ -36,15 +36,18 @@ $string['col_fullname'] = 'User';
 $string['col_reason'] = 'Reason';
 $string['col_timecreated'] = 'Date';
 $string['eventfilerejected'] = 'File rejected by media policy';
+$string['formatlist'] = '{$a->list} or {$a->last}';
 $string['othermaxmb'] = 'Maximum size for other files (MB)';
 $string['othermaxmb_desc'] = 'Applies to any file that is not audio or video (documents, images...).';
 $string['pluginname'] = 'Media upload policy';
 $string['privacy:metadata'] = 'The Media upload policy plugin does not store any personal data.';
-$string['reason_rejected_audio'] = 'Audio not MP3 or too large';
+$string['reason_rejected_audio'] = 'Audio format not allowed or too large';
+$string['reason_rejected_audio_none'] = 'Audio not allowed';
 $string['reason_rejected_size'] = 'Too large';
 $string['reason_rejected_unreadable'] = 'Could not be checked';
 $string['reason_rejected_video'] = 'Video';
-$string['rejected_audio'] = 'Audio must be MP3 and at most {$a->maxmb} MB ({$a->item}).';
+$string['rejected_audio'] = 'Audio must be {$a->formats} and at most {$a->maxmb} MB ({$a->item}).';
+$string['rejected_audio_none'] = 'Audio files are not allowed ({$a->item}).';
 $string['rejected_size'] = 'The file {$a->item} exceeds the {$a->maxmb} MB limit.';
 $string['rejected_unreadable'] = 'The file {$a->item} could not be checked and has been rejected.';
 $string['rejected_video'] = 'Video files are not allowed ({$a->item}).';

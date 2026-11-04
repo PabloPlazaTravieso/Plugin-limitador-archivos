@@ -67,16 +67,20 @@ class scanner extends \core\antivirus\scanner {
         }
 
         $config = get_config('antivirus_mediapolicy');
-        $allowed = array_values(array_filter(array_map(
-            'trim',
-            explode(',', strtolower($config->allowedaudiomimetypes ?? 'audio/mpeg'))
-        )));
+        $formats = audio_formats::parse($config->allowedaudioformats ?? null);
         $audiomax = (int) ($config->audiomaxmb ?? 20) * 1048576;
         $othermax = (int) ($config->othermaxmb ?? 30) * 1048576;
 
-        $result = policy::evaluate($contentmime, $extmime, $size, $allowed, $audiomax, $othermax);
+        $result = policy::evaluate($contentmime, $extmime, $size, audio_formats::mimetypes($formats), $audiomax, $othermax);
         if ($result === null) {
             return self::SCAN_RESULT_OK;
+        }
+        if ($result['reason'] === 'rejected_audio') {
+            if (!$formats) {
+                $result = ['reason' => 'rejected_audio_none', 'a' => []];
+            } else {
+                $result['a']['formats'] = audio_formats::label_list($formats);
+            }
         }
         return $this->reject($result, $filename, $contentmime, $extmime, $size);
     }

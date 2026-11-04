@@ -187,7 +187,41 @@ final class scanner_test extends \advanced_testcase {
         $scanner = new scanner();
         $path = $this->make_file('fake.mp3', $this->wav_content());
         $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($path, 'fake.mp3'));
-        $this->assertSame('rejected_audio', $scanner->get_virus_found_message()['string']);
+        $message = $scanner->get_virus_found_message();
+        $this->assertSame('rejected_audio', $message['string']);
+        $this->assertSame('MP3', $message['placeholders']['formats']);
+    }
+
+    public function test_allowed_formats_use_settings(): void {
+        $scanner = new scanner();
+        $wav = $this->make_file('sound.wav', $this->wav_content());
+        $mp3 = $this->make_file('song.mp3', $this->mp3_content());
+        $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($wav, 'sound.wav'));
+
+        set_config('allowedaudioformats', 'mp3,wav', 'antivirus_mediapolicy');
+        $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($wav, 'sound.wav'));
+        $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($mp3, 'song.mp3'));
+
+        set_config('allowedaudioformats', 'wav', 'antivirus_mediapolicy');
+        $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($mp3, 'song.mp3'));
+        $this->assertSame('WAV', $scanner->get_virus_found_message()['placeholders']['formats']);
+    }
+
+    public function test_no_audio_format_allowed(): void {
+        set_config('allowedaudioformats', '', 'antivirus_mediapolicy');
+        $scanner = new scanner();
+        $mp3 = $this->make_file('song.mp3', $this->mp3_content());
+        $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($mp3, 'song.mp3'));
+        $this->assertSame('rejected_audio_none', $scanner->get_virus_found_message()['string']);
+        $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($this->make_file('notes.txt', 'Hi'), 'notes.txt'));
+    }
+
+    public function test_video_rejected_even_if_audio_format_allowed(): void {
+        set_config('allowedaudioformats', implode(',', array_keys(audio_formats::FORMATS)), 'antivirus_mediapolicy');
+        $scanner = new scanner();
+        $path = $this->make_file('clip.m4a', $this->mp4_content());
+        $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($path, 'clip.m4a'));
+        $this->assertSame('rejected_video', $scanner->get_virus_found_message()['string']);
     }
 
     public function test_size_limit_uses_settings(): void {

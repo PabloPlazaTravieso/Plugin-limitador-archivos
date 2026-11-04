@@ -1,6 +1,6 @@
 # Guía de instalación: Política de subida de archivos multimedia
 
-Plugin `antivirus_mediapolicy`, versión 1.0.1, para Moodle 4.4 o superior con PHP 8.1 o superior.
+Plugin `antivirus_mediapolicy`, versión 1.1.0, para Moodle 4.4 o superior con PHP 8.1 o superior.
 
 ## Qué hace
 
@@ -9,7 +9,7 @@ Se aplica a cualquier subida de archivos de la plataforma: selector de archivos,
 | Tipo | Regla |
 |------|-------|
 | Vídeo | Rechazado siempre, de cualquier formato y tamaño |
-| Audio | Solo MP3, máximo 20 MB |
+| Audio | Solo los formatos marcados en los ajustes (por defecto, MP3), máximo 20 MB |
 | Resto | Aceptado, máximo 30 MB |
 
 - El tipo se detecta por el contenido real del archivo, no solo por la extensión: un vídeo renombrado a `.pdf` se rechaza.
@@ -19,7 +19,7 @@ Se aplica a cualquier subida de archivos de la plataforma: selector de archivos,
 
 ## 1. Instalar
 
-Instalación desde la web, con el archivo `antivirus_mediapolicy-1.0.1.zip`:
+Instalación desde la web, con el archivo `antivirus_mediapolicy-1.1.0.zip`:
 
 1. Ve a *Administración del sitio → Plugins → Instalar plugins* (*Install plugins*).
 2. Sube el ZIP. Si Moodle no detecta el tipo, elige **Plugin antivirus**.
@@ -44,7 +44,7 @@ Los ajustes están en *Administración del sitio → Plugins → Plugins antivir
 
 | Ajuste | Valor por defecto |
 |--------|-------------------|
-| Tipos MIME de audio permitidos | `audio/mpeg` (MP3) |
+| Formatos de audio permitidos | MP3 (casillas: MP3, WAV, OGG, M4A, AAC, FLAC, AIFF) |
 | Tamaño máximo de audio (MB) | 20 |
 | Tamaño máximo del resto de archivos (MB) | 30 |
 
@@ -74,6 +74,6 @@ El informe se puede descargar en CSV. Lee los datos de los registros estándar d
 
 ## Actualizar o desinstalar
 
-- **Actualizar:** sube el ZIP de la versión nueva por *Instalar plugins*, o reemplaza la carpeta en el servidor, y entra en *Notificaciones*.
+- **Actualizar:** sube el ZIP de la versión nueva por *Instalar plugins*, o reemplaza la carpeta en el servidor, y entra en *Notificaciones*. Al pasar de la 1.0.x a la 1.1.0, el antiguo ajuste de tipos MIME se convierte solo en las casillas de formatos (`audio/mpeg` pasa a ser la casilla MP3 marcada).
 - **Desactivar temporalmente:** desactívalo en *Gestionar plugins antivirus*.
 - **Desinstalar:** ve a *Administración del sitio → Plugins → Vista general de plugins*, busca `antivirus_mediapolicy` y pulsa *Desinstalar*.

@@ -32,12 +32,12 @@ $ADMIN->add('reports', new admin_externalpage(
 ));
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext(
-        'antivirus_mediapolicy/allowedaudiomimetypes',
-        get_string('allowedaudiomimetypes', 'antivirus_mediapolicy'),
-        get_string('allowedaudiomimetypes_desc', 'antivirus_mediapolicy'),
-        'audio/mpeg',
-        PARAM_TEXT
+    $settings->add(new admin_setting_configmulticheckbox(
+        'antivirus_mediapolicy/allowedaudioformats',
+        get_string('allowedaudioformats', 'antivirus_mediapolicy'),
+        get_string('allowedaudioformats_desc', 'antivirus_mediapolicy'),
+        [\antivirus_mediapolicy\audio_formats::DEFAULT => 1],
+        \antivirus_mediapolicy\audio_formats::choices()
     ));
 
     $settings->add(new admin_setting_configtext(

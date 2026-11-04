@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['allowedaudiomimetypes'] = 'Tipos MIME de audio permitidos';
-$string['allowedaudiomimetypes_desc'] = 'Lista separada por comas, comprobada sobre el contenido real del archivo (p. ej. audio/mpeg para MP3).';
+$string['allowedaudioformats'] = 'Formatos de audio permitidos';
+$string['allowedaudioformats_desc'] = 'Marca los formatos de audio que se pueden subir. Se comprueba el contenido real del archivo, no solo la extensión. Si no marcas ninguno, no se admite ningún audio. Los vídeos se rechazan siempre, aunque tengan una de estas extensiones.';
 $string['audiomaxmb'] = 'Tamaño máximo de audio (MB)';
 $string['audiomaxmb_desc'] = 'Se rechazan los archivos de audio que superen este tamaño.';
 $string['col_contentmime'] = 'Tipo detectado';
@@ -36,15 +36,18 @@ $string['col_fullname'] = 'Usuario';
 $string['col_reason'] = 'Motivo';
 $string['col_timecreated'] = 'Fecha';
 $string['eventfilerejected'] = 'Archivo rechazado por la política multimedia';
+$string['formatlist'] = '{$a->list} o {$a->last}';
 $string['othermaxmb'] = 'Tamaño máximo del resto de archivos (MB)';
 $string['othermaxmb_desc'] = 'Se aplica a cualquier archivo que no sea audio ni vídeo (documentos, imágenes...).';
 $string['pluginname'] = 'Política de subida de archivos multimedia';
 $string['privacy:metadata'] = 'El plugin Política de subida de archivos multimedia no almacena datos personales.';
-$string['reason_rejected_audio'] = 'Audio no MP3 o demasiado grande';
+$string['reason_rejected_audio'] = 'Formato de audio no permitido o demasiado grande';
+$string['reason_rejected_audio_none'] = 'Audio no permitido';
 $string['reason_rejected_size'] = 'Demasiado grande';
 $string['reason_rejected_unreadable'] = 'No se pudo comprobar';
 $string['reason_rejected_video'] = 'Vídeo';
-$string['rejected_audio'] = 'El audio debe ser MP3 de máximo {$a->maxmb} MB ({$a->item}).';
+$string['rejected_audio'] = 'El audio debe ser {$a->formats} de máximo {$a->maxmb} MB ({$a->item}).';
+$string['rejected_audio_none'] = 'No se permiten archivos de audio ({$a->item}).';
 $string['rejected_size'] = 'El archivo {$a->item} supera el límite de {$a->maxmb} MB.';
 $string['rejected_unreadable'] = 'No se ha podido comprobar el archivo {$a->item} y se ha rechazado.';
 $string['rejected_video'] = 'No se permiten archivos de vídeo ({$a->item}).';
