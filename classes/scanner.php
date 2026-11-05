@@ -68,10 +68,19 @@ class scanner extends \core\antivirus\scanner {
 
         $config = get_config('antivirus_mediapolicy');
         $formats = audio_formats::parse($config->allowedaudioformats ?? null);
-        $audiomax = (int) ($config->audiomaxmb ?? 20) * 1048576;
+        $audiomax = (int) ($config->audiomaxmb ?? 30) * 1048576;
         $othermax = (int) ($config->othermaxmb ?? 30) * 1048576;
+        $allowvideo = !empty($config->allowvideo);
 
-        $result = policy::evaluate($contentmime, $extmime, $size, audio_formats::mimetypes($formats), $audiomax, $othermax);
+        $result = policy::evaluate(
+            $contentmime,
+            $extmime,
+            $size,
+            audio_formats::mimetypes($formats),
+            $audiomax,
+            $othermax,
+            $allowvideo
+        );
         if ($result === null) {
             return self::SCAN_RESULT_OK;
         }

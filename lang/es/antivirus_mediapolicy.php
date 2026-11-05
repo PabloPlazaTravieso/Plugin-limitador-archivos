@@ -25,7 +25,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['allowedaudioformats'] = 'Formatos de audio permitidos';
-$string['allowedaudioformats_desc'] = 'Marca los formatos de audio que se pueden subir. Se comprueba el contenido real del archivo, no solo la extensión. Si no marcas ninguno, no se admite ningún audio. Los vídeos se rechazan siempre, aunque tengan una de estas extensiones.';
+$string['allowedaudioformats_desc'] = 'Marca los formatos de audio que se pueden subir. Se comprueba el contenido real del archivo, no solo la extensión. Si no marcas ninguno, no se admite ningún audio. Un vídeo nunca se acepta como audio, aunque tenga una de estas extensiones.';
+$string['allowvideo'] = 'Permitir archivos de vídeo';
+$string['allowvideo_desc'] = 'Si no está marcada, se rechaza cualquier archivo de vídeo, de cualquier formato y tamaño, aunque se le cambie la extensión. Si se marca, los vídeos se aceptan con el límite de tamaño del resto de archivos.';
+$string['allowvideo_label'] = 'Sí, permitir subir vídeos';
 $string['audiomaxmb'] = 'Tamaño máximo de audio (MB)';
 $string['audiomaxmb_desc'] = 'Se rechazan los archivos de audio que superen este tamaño.';
 $string['col_contentmime'] = 'Tipo detectado';

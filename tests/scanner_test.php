@@ -224,6 +224,42 @@ final class scanner_test extends \advanced_testcase {
         $this->assertSame('rejected_video', $scanner->get_virus_found_message()['string']);
     }
 
+    /**
+     * Writes a ZIP file into the temp dir.
+     *
+     * @param string $name
+     * @param string[] $entries Name inside the ZIP => content.
+     * @return string Full path.
+     */
+    protected function make_zip(string $name, array $entries): string {
+        $path = $this->dir . '/' . $name;
+        $zip = new \ZipArchive();
+        $zip->open($path, \ZipArchive::CREATE);
+        foreach ($entries as $entry => $content) {
+            $zip->addFromString($entry, $content);
+        }
+        $zip->close();
+        return $path;
+    }
+
+    public function test_video_allowed_by_setting(): void {
+        set_config('allowvideo', 1, 'antivirus_mediapolicy');
+        $scanner = new scanner();
+        $path = $this->make_file('clip.mp4', $this->mp4_content());
+        $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($path, 'clip.mp4'));
+
+        set_config('othermaxmb', 0, 'antivirus_mediapolicy');
+        $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($path, 'clip.mp4'));
+        $this->assertSame('rejected_size', $scanner->get_virus_found_message()['string']);
+    }
+
+    public function test_zip_with_video_accepted(): void {
+        // Packages are checked as a single file: a video inside a ZIP, SCORM or H5P is not looked for.
+        $scanner = new scanner();
+        $path = $this->make_zip('pack.zip', ['imsmanifest.xml' => '<manifest/>', 'clip.mp4' => $this->mp4_content()]);
+        $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($path, 'pack.zip'));
+    }
+
     public function test_size_limit_uses_settings(): void {
         set_config('othermaxmb', 1, 'antivirus_mediapolicy');
         $scanner = new scanner();
@@ -233,6 +269,16 @@ final class scanner_test extends \advanced_testcase {
         $message = $scanner->get_virus_found_message();
         $this->assertSame('rejected_size', $message['string']);
         $this->assertSame(1, $message['placeholders']['maxmb']);
+    }
+
+    public function test_default_audio_limit_is_30mb(): void {
+        $scanner = new scanner();
+        $mb = 1048576;
+        $ok = $this->make_file('ok.mp3', str_pad($this->mp3_content(), 30 * $mb, "\x00"));
+        $this->assertSame(scanner::SCAN_RESULT_OK, $scanner->scan_file($ok, 'ok.mp3'));
+        $big = $this->make_file('big.mp3', str_pad($this->mp3_content(), 30 * $mb + 1, "\x00"));
+        $this->assertSame(scanner::SCAN_RESULT_FOUND, $scanner->scan_file($big, 'big.mp3'));
+        $this->assertSame(30, $scanner->get_virus_found_message()['placeholders']['maxmb']);
     }
 
     public function test_audio_limit_uses_settings(): void {

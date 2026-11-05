@@ -33,6 +33,7 @@ class policy {
      * @param string[] $allowedaudio Allowed audio content mimetypes.
      * @param int $audiomax Max audio size in bytes.
      * @param int $othermax Max size in bytes for any other file.
+     * @param bool $allowvideo Whether video files are allowed (then they count as any other file).
      * @return array|null Null if accepted, otherwise ['reason' => string id, 'a' => placeholders].
      */
     public static function evaluate(
@@ -41,15 +42,17 @@ class policy {
         int $size,
         array $allowedaudio,
         int $audiomax,
-        int $othermax
+        int $othermax,
+        bool $allowvideo = false
     ): ?array {
 
         // Video: rejected if either the content or the extension says video (defensive).
-        if (self::is_type($contentmime, 'video') || self::is_type($extmime, 'video')) {
+        $isvideo = self::is_type($contentmime, 'video') || self::is_type($extmime, 'video');
+        if ($isvideo && !$allowvideo) {
             return ['reason' => 'rejected_video', 'a' => []];
         }
 
-        if (self::is_type($contentmime, 'audio') || self::is_type($extmime, 'audio')) {
+        if (!$isvideo && (self::is_type($contentmime, 'audio') || self::is_type($extmime, 'audio'))) {
             // The real content must be an allowed format, and the extension must look like audio too.
             $formatok = in_array($contentmime, $allowedaudio, true) && self::is_type($extmime, 'audio');
             if (!$formatok || $size > $audiomax) {

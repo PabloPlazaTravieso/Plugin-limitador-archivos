@@ -4,11 +4,13 @@ Plugin antivirus para Moodle 4.4 que restringe los archivos que se pueden subir,
 
 | Tipo | Regla |
 |------|-------|
-| Vídeo | Rechazado siempre (cualquier formato y tamaño) |
-| Audio | Solo los formatos marcados en los ajustes (por defecto, MP3), máximo 20 MB |
+| Vídeo | Rechazado (cualquier formato y tamaño). Se puede permitir con la casilla *Permitir archivos de vídeo*; por defecto, no |
+| Audio | Solo los formatos marcados en los ajustes (por defecto, MP3), máximo 30 MB |
 | Resto | Aceptado, máximo 30 MB |
 
-El tipo se detecta sobre el **contenido real** (`finfo`) y también por la extensión (`mimeinfo`). Algunos MP3 reales tienen bytes entre la etiqueta ID3 y el audio y `finfo` no los reconoce (`application/octet-stream`); en ese caso, si el nombre acaba en `.mp3`, el plugin busca tras la etiqueta varias tramas MPEG Layer III seguidas (`classes/mpeg_audio.php`) y, si las encuentra, lo trata como `audio/mpeg`. Los tres límites se configuran en los ajustes del plugin. Los formatos de audio se eligen con casillas (MP3, WAV, OGG, M4A, AAC, FLAC, AIFF; por defecto solo MP3), y cada uno corresponde a los tipos MIME que `finfo` detecta para ese formato (`classes/audio_formats.php`). WMA no se ofrece porque `finfo` lo detecta como vídeo (ASF). Un vídeo se rechaza siempre, aunque tenga una extensión de audio marcada.
+El tipo se detecta sobre el **contenido real** (`finfo`) y también por la extensión (`mimeinfo`). Algunos MP3 reales tienen bytes entre la etiqueta ID3 y el audio y `finfo` no los reconoce (`application/octet-stream`); en ese caso, si el nombre acaba en `.mp3`, el plugin busca tras la etiqueta varias tramas MPEG Layer III seguidas (`classes/mpeg_audio.php`) y, si las encuentra, lo trata como `audio/mpeg`. Los tres límites se configuran en los ajustes del plugin. Los formatos de audio se eligen con casillas (MP3, WAV, OGG, M4A, AAC, FLAC, AIFF; por defecto solo MP3), y cada uno corresponde a los tipos MIME que `finfo` detecta para ese formato (`classes/audio_formats.php`). WMA no se ofrece porque `finfo` lo detecta como vídeo (ASF). Un vídeo nunca se acepta como audio, aunque tenga una extensión de audio marcada.
+
+Los vídeos se controlan con la casilla **Permitir archivos de vídeo** (al lado pone "Sí, permitir subir vídeos"; por defecto, desmarcada). Si se marca, los vídeos cuentan como el resto de archivos, con su límite de tamaño. La casilla usa `classes/admin/setting_labelled_checkbox.php` para mostrar ese texto en lugar de "Valor por defecto: No".
 
 Cada rechazo genera el evento `\antivirus_mediapolicy\event\file_rejected` (usuario, nombre de archivo, tipo detectado, tamaño y motivo), visible en *Informes → Registros*. El evento se registra en el contexto de la página desde la que se sube (curso, actividad...) o en el de sistema si no hay página (app móvil, servicios web).
 
@@ -24,12 +26,13 @@ Si el archivo no se puede leer para analizarlo, se rechaza: el core de Moodle ac
 .                                 → raíz del repositorio = <moodle>/lib/antivirus/mediapolicy
 ├── INSTALACION.md                guía de instalación para administradores
 ├── version.php
-├── settings.php                  ajustes (formatos de audio, MB audio, MB resto)
+├── settings.php                  ajustes (permitir vídeos, formatos de audio, MB audio, MB resto)
 ├── classes/
 │   ├── scanner.php               enganche con \core\antivirus\scanner
 │   ├── policy.php                reglas puras (testeables)
 │   ├── audio_formats.php         formatos de audio seleccionables y sus tipos MIME
 │   ├── mpeg_audio.php            detección de MP3 que finfo no reconoce
+│   ├── admin/setting_labelled_checkbox.php  casilla con texto al lado (ajuste de vídeos)
 │   ├── event/file_rejected.php   evento de auditoría
 │   ├── table/rejected_uploads.php  tabla del informe
 │   └── privacy/provider.php
@@ -68,7 +71,7 @@ Pasar la carpeta `tests/` no ejecuta nada: PHPUnit busca `*Test.php` y Moodle us
 
 ## Limitaciones
 
-- Los paquetes ZIP (SCORM, H5P, ZIP descomprimidos en un recurso) se analizan como un único archivo ZIP, así que un vídeo dentro del paquete no se detecta. Por decisión del proyecto se acepta así en todos ellos: el plugin no bloquea un vídeo que vaya comprimido dentro de un paquete. El paquete sí está sujeto al límite general de tamaño.
+- Los paquetes ZIP (SCORM, H5P, ZIP descomprimidos en un recurso) se analizan como un único archivo ZIP, así que un vídeo dentro del paquete no se detecta. Por decisión del proyecto se acepta así en todos ellos. El paquete sí está sujeto al límite general de tamaño.
 - No cubre archivos ya existentes, restauraciones de copias de seguridad ni archivos creados por código de servidor.
 - `core_files_upload` (servicio web) no llama al antivirus; no está en el servicio de la app móvil.
 - Formatos de audio ambiguos (`.ogg`, `.webm`, `.m4a`) se rechazan por el criterio defensivo.

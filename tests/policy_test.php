@@ -67,6 +67,25 @@ final class policy_test extends \basic_testcase {
     }
 
     /**
+     * With videos allowed they are treated as any other file.
+     */
+    public function test_allow_video(): void {
+        $evaluate = fn($content, $ext, $size) => policy::evaluate(
+            $content,
+            $ext,
+            $size,
+            ['audio/mpeg'],
+            20 * self::MB,
+            30 * self::MB,
+            true
+        )['reason'] ?? null;
+        $this->assertNull($evaluate('video/mp4', 'video/mp4', 25 * self::MB));
+        $this->assertNull($evaluate('video/mp4', 'audio/mp4', 25 * self::MB));
+        $this->assertSame('rejected_size', $evaluate('video/mp4', 'video/mp4', 30 * self::MB + 1));
+        $this->assertSame('rejected_audio', $evaluate('audio/x-wav', 'audio/wav', self::MB));
+    }
+
+    /**
      * Messages carry the configured limit.
      */
     public function test_placeholders(): void {

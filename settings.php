@@ -32,6 +32,14 @@ $ADMIN->add('reports', new admin_externalpage(
 ));
 
 if ($ADMIN->fulltree) {
+    $settings->add(new \antivirus_mediapolicy\admin\setting_labelled_checkbox(
+        'antivirus_mediapolicy/allowvideo',
+        get_string('allowvideo', 'antivirus_mediapolicy'),
+        get_string('allowvideo_desc', 'antivirus_mediapolicy'),
+        0,
+        get_string('allowvideo_label', 'antivirus_mediapolicy')
+    ));
+
     $settings->add(new admin_setting_configmulticheckbox(
         'antivirus_mediapolicy/allowedaudioformats',
         get_string('allowedaudioformats', 'antivirus_mediapolicy'),
@@ -44,7 +52,7 @@ if ($ADMIN->fulltree) {
         'antivirus_mediapolicy/audiomaxmb',
         get_string('audiomaxmb', 'antivirus_mediapolicy'),
         get_string('audiomaxmb_desc', 'antivirus_mediapolicy'),
-        20,
+        30,
         PARAM_INT
     ));
 
